@@ -1,6 +1,8 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+/* Tailwind CSS imports - ensure this is the very first line */
+@import "tailwindcss";
+@import "tw-animate-css";
 
+/* Custom CSS variables for theming */
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -74,6 +76,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
+/* Theme variables for inline styles */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -113,6 +116,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Base styles applied globally */
 @layer base {
   * {
     @apply border-border outline-ring/50;

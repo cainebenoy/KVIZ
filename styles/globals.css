@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,3 +121,6 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* This file is added as a workaround for the deployment error. */
+/* In a standard Next.js App Router project, global styles are typically in app/globals.css. */
