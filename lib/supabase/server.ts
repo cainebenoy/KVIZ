@@ -4,7 +4,14 @@ import { cookies } from "next/headers"
 export async function createClient() {
   const cookieStore = cookies()
 
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables. Please check your environment configuration.")
+  }
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value
@@ -13,9 +20,6 @@ export async function createClient() {
         try {
           cookieStore.set({ name, value, ...options })
         } catch (error) {
-          // The `cookies().set()` method can only be called from a Server Component or Server Action.
-          // This error is typically not a problem if you're only setting cookies in a Server Action
-          // or Server Component.
           console.warn("Could not set cookie from server client:", error)
         }
       },
@@ -23,9 +27,6 @@ export async function createClient() {
         try {
           cookieStore.set({ name, value: "", ...options })
         } catch (error) {
-          // The `cookies().set()` method can only be called from a Server Component or Server Action.
-          // This error is typically not a problem if you're only removing cookies in a Server Action
-          // or Server Component.
           console.warn("Could not remove cookie from server client:", error)
         }
       },

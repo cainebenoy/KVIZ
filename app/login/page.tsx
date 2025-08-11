@@ -3,15 +3,27 @@
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const [supabase, setSupabase] = useState<any>(null)
+
+  useEffect(() => {
+    try {
+      const client = createClient()
+      setSupabase(client)
+    } catch (error) {
+      console.error("Failed to initialize Supabase client:", error)
+    }
+  }, [])
 
   const handleGoogleSignIn = async () => {
+    if (!supabase) {
+      alert("Authentication service is not available. Please try again later.")
+      return
+    }
+
     try {
       setIsLoading(true)
       const { error } = await supabase.auth.signInWithOAuth({
@@ -31,6 +43,21 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (!supabase) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-gray-900">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex items-center justify-center p-8">
+            <div className="text-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600 mx-auto mb-4" />
+              <p className="text-gray-600">Loading authentication...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
